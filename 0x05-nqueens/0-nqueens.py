@@ -1,28 +1,40 @@
 #!/usr/bin/python3
 import sys
 
-def is_safe(board, row, col, n):
-    # Check this row on left side
+def is_safe(board, row, col):
     for i in range(col):
-        if board[i] == row or \
-           board[i] - i == row - col or \
-           board[i] + i == row + col:
+        if board[row][i] == 1:
             return False
+
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
+    for i, j in zip(range(row, len(board), 1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+
     return True
 
-def solve_nqueens(board, col, n):
-    if col == n:
-        print([[i, board[i]] for i in range(n)])
-        return
+def solve_n_queens_util(board, col, solutions):
+    if col >= len(board):
+        solutions.append([[i, board[i].index(1)] for i in range(len(board))])
+        return True
 
-    for row in range(n):
-        if is_safe(board, row, col, n):
-            board[col] = row
-            solve_nqueens(board, col + 1, n)
+    res = False
+    for i in range(len(board)):
+        if is_safe(board, i, col):
+            board[i][col] = 1
+            res = solve_n_queens_util(board, col + 1, solutions) or res
+            board[i][col] = 0
 
-def nqueens(n):
-    board = [-1] * n
-    solve_nqueens(board, 0, n)
+    return res
+
+def solve_n_queens(n):
+    board = [[0] * n for _ in range(n)]
+    solutions = []
+    solve_n_queens_util(board, 0, solutions)
+    return solutions
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
@@ -39,4 +51,6 @@ if __name__ == "__main__":
         print("N must be at least 4")
         sys.exit(1)
 
-    nqueens(n)
+    solutions = solve_n_queens(n)
+    for solution in solutions:
+        print(solution)

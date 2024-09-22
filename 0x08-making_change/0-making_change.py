@@ -1,36 +1,32 @@
 #!/usr/bin/python3
-"""
-Module for making change using the fewest number of coins
-"""
+"""Module to calculate the fewest number of coins needed for a given total."""
 
 
 def makeChange(coins, total):
-    """
-    Determine the fewest number of coins needed to meet a given amount total.
+    """Determine the fewest number of coins to meet a given amount total.
 
     Args:
-    coins (list of int): The values of the coins in your possession.
-    total (int): The total amount to make change for.
+        coins (list): List of available coin denominations.
+        total (int): The amount of money to be made.
 
     Returns:
-    int: Fewest number of coins needed to meet total.
-         Returns 0 if total is 0 or less.
-         Returns -1 if total cannot be met by any number of coins.
+        int: The fewest number of coins needed to meet the total, or -1 if it cannot be met.
     """
     if total <= 0:
         return 0
 
-    # Initialize a list to store the minimum coins needed for each amount
-    min_coins = [float("inf")] * (total + 1)
-    min_coins[0] = 0
+    dp = [float("inf")] * (total + 1)
+    dp[0] = 0
 
-    # Iterate through all amounts from 1 to total
-    for i in range(1, total + 1):
-        # Try each coin
-        for coin in coins:
-            if coin <= i:
-                # Update min_coins[i] if using this coin results in fewer coins
-                min_coins[i] = min(min_coins[i], min_coins[i - coin] + 1)
+    for coin in coins:
+        for i in range(coin, total + 1):
+            dp[i] = min(dp[i], dp[i - coin] + 1)
 
-    # If min_coins[total] is still infinity, it means we couldn't make the total
-    return min_coins[total] if min_coins[total] != float("inf") else -1
+    return dp[total] if dp[total] != float("inf") else -1
+
+
+if __name__ == "__main__":
+    # Example usage
+    coins = [1, 2, 5]
+    total = 11
+    print(makeChange(coins, total))  # Expected output: 3 (5 + 5 + 1)

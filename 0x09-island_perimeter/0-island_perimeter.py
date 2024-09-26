@@ -1,40 +1,35 @@
 #!/usr/bin/python3
-"""
-This module defines a function to calculate the perimeter of an island.
-"""
-
 
 def island_perimeter(grid):
-    """
-    Calculate the perimeter of an island represented in a grid.
-    
-    Args:
-        grid (list of list of int): A rectangular grid where:
-            - 0 represents water
-            - 1 represents land
-            The grid is rectangular with a width and height not exceeding 100.
-    
-    Returns:
-        int: The perimeter of the island.
-    """
-    perimeter = 0
-    rows = len(grid)
-    cols = len(grid[0]) if rows > 0 else 0
-    
-    for i in range(rows):
-        for j in range(cols):
-            if grid[i][j] == 1:
-                # Top neighbor
-                if i == 0 or grid[i-1][j] == 0:
-                    perimeter += 1
-                # Bottom neighbor
-                if i == rows - 1 or grid[i+1][j] == 0:
-                    perimeter += 1
-                # Left neighbor
-                if j == 0 or grid[i][j-1] == 0:
-                    perimeter += 1
-                # Right neighbor
-                if j == cols - 1 or grid[i][j+1] == 0:
-                    perimeter += 1
-    
-    return perimeter
+  """
+  Calculates the perimeter of the island in a grid.
+
+  Args:
+      grid: A list of lists of integers representing a rectangular grid.
+          0 represents water, 1 represents land.
+
+  Returns:
+      The perimeter of the island in the grid. 
+  """
+  rows, cols = len(grid), len(grid[0])
+  perimeter = 0
+
+  for row in range(rows):
+    for col in range(cols):
+      if grid[row][col] == 1:
+        perimeter += 4  # Initial perimeter for a land cell
+
+        # Check for adjacent land cells and subtract perimeter for edges
+        if row > 0 and grid[row - 1][col] == 1:
+          perimeter -= 2
+        if col > 0 and grid[row][col - 1] == 1:
+          perimeter -= 2
+
+  return perimeter
+
+# Make the script executable (optional but recommended)
+if __name__ == "__main__":
+  # Example usage (replace with your actual grid)
+  grid = [[0, 1, 0, 0], [1, 1, 1, 0], [0, 1, 0, 0], [1, 1, 0, 0]]
+  perimeter = island_perimeter(grid)
+  print("Perimeter of the island:", perimeter)
